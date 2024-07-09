@@ -1,9 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
-
-const Home = () => {
-  return (<div>hello world</div>)
-}
+import TicketForm from './components/TicketForm';
 
 const TicketList = () => {
   return (
@@ -34,7 +31,7 @@ function App() {
           </ul>
         </nav>
         <Routes>
-          <Route exact path='/' element={<Home/>} />
+          <Route exact path='/' element={<TicketForm/>} />
           <Route exact path='/admin' element={<TicketList/>} />
         </Routes>
       </div>
