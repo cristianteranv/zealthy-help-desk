@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import { TextField, Button, Typography, Box } from '@mui/material';
 
 function TicketForm() {
   const [name, setName] = useState('');
@@ -6,31 +7,40 @@ function TicketForm() {
   const [description, setDescription] = useState('');
 
   return (
-    <form>
-      <h2>
-        Ticket Form
-      </h2>
-      <input
-        type="text"
-        placeholder="Name"
+    <Box component='form' sx={{ maxWidth: 400, margin: 'auto' }}>
+      <Typography variant='h4' gutterBottom>
+        Submit a ticket
+      </Typography>
+      <TextField
+        fullWidth
+        margin="normal"
+        label="Name"
         value={name}
         onChange={(e) => setName(e.target.value)}
         required
       />
-      <input
-        type="email"
-        placeholder="Email"
+      <TextField
+        fullWidth
+        margin="normal"
+        label="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         required
       />
-      <textarea
-        placeholder="Description"
+      <TextField
+        fullWidth
+        margin="normal"
+        label="Description"
+        multiline
+        rows={4}
         value={description}
         onChange={(e) => setDescription(e.target.value)}
         required
       />
-    </form>
+      <Button type="submit" variant='contained' color="primary" sx={{ mt: 2 }}>
+        Submit Ticket
+      </Button>
+    </Box>
   )
 }
 
