@@ -2,20 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import { AppBar, Toolbar, Typography, Container, Button } from '@mui/material';
 import TicketForm from './components/TicketForm';
-
-const TicketList = () => {
-  return (
-    <div>
-      <h1>Ticket List</h1>
-      <ul>
-        <li>ticket 1</li>
-        <li>ticket 2</li>
-        <li>ticket 3</li>
-      </ul>
-    </div>
-  )
-}
-
+import TicketList from './components/TicketList';
 
 function App() {
   return (
