@@ -9,17 +9,19 @@ function App() {
     <Router>
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6">
+          <Typography variant="h6" style={{flexGrow: 1}}>
             Help Desk
           </Typography>
           <Button color="inherit" component={Link} to="/">Ticket Form</Button>
           <Button color="inherit" component={Link} to="/admin">Admin Panel</Button>
         </Toolbar>
       </AppBar>
-      <Routes>
-        <Route path="/" element={<TicketForm />} />
-        <Route path="/admin" element={<TicketList />} />
-      </Routes>
+      <Container style={{marginTop: '2rem'}}>
+        <Routes>
+          <Route path="/" element={<TicketForm />} />
+          <Route path="/admin" element={<TicketList />} />
+        </Routes>
+      </Container>
     </Router>
   );
 }

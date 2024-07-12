@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { 
@@ -13,7 +12,6 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  Box,
   DialogActions,
   Button,
   TextField,
@@ -88,7 +86,7 @@ function TicketList() {
   };
 
   return (
-    <div>
+    <>
       <Typography variant="h4" gutterBottom>
         Ticket List
       </Typography>
@@ -167,18 +165,18 @@ function TicketList() {
                 style={{ marginTop: '1rem' }}
               />
             </DialogContent>
-            <DialogActions>
-              <Button onClick={()=>handleRespond('in progress')} color="primary">
+            <DialogActions style={{marginBottom: '0.5rem'}}>
+              <Button onClick={()=>handleRespond('in progress')} variant='contained'>
                 Mark In Progress
               </Button>
-              <Button onClick={()=>handleRespond('done')} color="secondary">
+              <Button onClick={()=>handleRespond('done')} variant='contained'>
                 Mark Resolved
               </Button>
             </DialogActions>
           </>
         )}
       </Dialog>
-    </div>
+    </>
   );
 }
 
