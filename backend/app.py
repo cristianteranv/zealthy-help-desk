@@ -50,6 +50,11 @@ def get_ticket(ticket_id):
             'created_at': ticket.created_at.isoformat(),
             'updated_at': ticket.updated_at.isoformat()
         },
+        'responses': [{
+            'id': r.id,
+            'message': r.message,
+            'created_at': r.created_at.isoformat()
+        } for r in responses]
     })
 
 @app.route('/api/tickets/<int:ticket_id>/respond', methods=['POST'])

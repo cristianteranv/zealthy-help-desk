@@ -4,7 +4,8 @@ import { Link } from 'react-router-dom';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { 
-  List, 
+  List,
+  ListItem,
   ListItemButton,
   ListItemText, 
   Typography, 
@@ -12,9 +13,11 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  Box,
   DialogActions,
   Button,
-  TextField
+  TextField,
+  Grid
 } from '@mui/material';
 
 function TicketList() {
@@ -45,7 +48,7 @@ function TicketList() {
   const handleOpen = async (ticketId) => {
     try {
       const response = await axios.get(`http://localhost:5000/api/tickets/${ticketId}`);
-      setSelectedTicket(response.data.ticket);
+      setSelectedTicket(response.data);
       setOpen(true);
     } catch (error) {
       console.error('Error fetching ticket details:', error);
@@ -60,8 +63,7 @@ function TicketList() {
 
   const handleStatusChange = async (newStatus) => {
     try {
-      await axios.put(`http://localhost:5000/api/tickets/${selectedTicket.id}/status`, { status: newStatus });
-      alert('Status updated successfully');
+      await axios.put(`http://localhost:5000/api/tickets/${selectedTicket.ticket.id}/status`, { status: newStatus });
       handleClose();
       fetchTickets();
     } catch (error) {
@@ -74,8 +76,7 @@ function TicketList() {
     try {
       handleStatusChange(status);
       if (response !== '') {
-        await axios.post(`http://localhost:5000/api/tickets/${selectedTicket.id}/respond`, { message: response });
-        alert('Response submitted successfully');
+        await axios.post(`http://localhost:5000/api/tickets/${selectedTicket.ticket.id}/respond`, { message: response });
         setResponse('');
       }
       handleClose();
@@ -105,7 +106,7 @@ function TicketList() {
       <Dialog open={open} onClose={handleClose} maxWidth='md' fullWidth>
         {selectedTicket && (
           <>
-            <DialogTitle>Ticket # {selectedTicket.id}</DialogTitle>
+            <DialogTitle>Ticket # {selectedTicket.ticket.id}</DialogTitle>
             <IconButton
               aria-label="close"
               onClick={handleClose}
@@ -119,16 +120,43 @@ function TicketList() {
               <CloseIcon />
             </IconButton>
             <DialogContent >
-              <Typography variant="h6" gutterBottom>
-                {selectedTicket.name} - {selectedTicket.email}
-              </Typography>
-              <Typography variant="body1" gutterBottom>
-                <strong>Description: </strong>{selectedTicket.description}
-              </Typography>
-              <Typography variant="body1" gutterBottom>
-                <strong>Status: </strong>
-                <Chip label={selectedTicket.status} color={selectedTicket.status === 'new' ? 'error' : selectedTicket.status === 'in progress' ? 'warning' : 'success'} />
-              </Typography>
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <Typography variant="h6" gutterBottom>
+                    <strong>Name: </strong>{selectedTicket.ticket.name}
+                  </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="h6" gutterBottom>
+                    <strong>Email: </strong>{selectedTicket.ticket.email}
+                  </Typography>
+                </Grid>
+              </Grid>
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <Typography variant="body1" gutterBottom>
+                    <strong>Description: </strong>{selectedTicket.ticket.description}
+                  </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="body1" gutterBottom>
+                    <strong>Status: </strong>
+                    <Chip label={selectedTicket.ticket.status} color={selectedTicket.ticket.status === 'new' ? 'error' : selectedTicket.ticket.status === 'in progress' ? 'warning' : 'success'} />
+                  </Typography>
+                </Grid>
+              </Grid>
+              {selectedTicket.responses.length > 0 &&
+              <>
+                <Typography variant="h6"><strong>Responses:</strong></Typography>
+                <List>
+                  {selectedTicket.responses.map((r) => (
+                    <ListItem key={r.id}>
+                      <ListItemText primary={r.message} secondary={new Date(r.created_at).toLocaleString()} />
+                    </ListItem>
+                  ))}
+                </List>
+              </>
+              }
               <TextField
                 fullWidth
                 multiline
