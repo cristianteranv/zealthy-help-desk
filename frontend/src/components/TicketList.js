@@ -41,6 +41,19 @@ function TicketList() {
       status: 'in progress'
     }
   ]);
+
+  useEffect(() => {
+    const fetchTickets = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/tickets');
+        setTickets(tickets.concat(response.data));
+      } catch (error) {
+        console.error('Error fetching tickets:', error);
+      }
+    };
+    fetchTickets();
+  }, []);
+
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [open, setOpen] = useState(false);
   const [response, setResponse] = useState('');
