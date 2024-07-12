@@ -18,50 +18,40 @@ import {
 } from '@mui/material';
 
 function TicketList() {
-  const [tickets, setTickets] = useState([
-    {
-      id: 1,
-      name: 'John Smith',
-      email: 'john@gmail.com',
-      description: 'This is a ticket description',
-      status: 'resolved'
-    },
-    {
-      id: 2,
-      name: 'Jane Doe',
-      email: 'jane@gmail.com',
-      description: 'This is a ticket description 2',
-      status: 'new'
-    },
-    {
-      id: 3,
-      name: 'Alice Smith',
-      email: 'alice@gmail.com',
-      description: 'This is a ticket description 3',
-      status: 'in progress'
-    }
-  ]);
+  const [tickets, setTickets] = useState([]);
 
   useEffect(() => {
-    const fetchTickets = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/api/tickets');
-        setTickets(tickets.concat(response.data));
-      } catch (error) {
-        console.error('Error fetching tickets:', error);
-      }
-    };
     fetchTickets();
   }, []);
+
+  const fetchTickets = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/tickets');
+      setTickets(response.data);
+    } catch (error) {
+      console.error('Error fetching tickets:', error);
+    }
+  };
 
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [open, setOpen] = useState(false);
   const [response, setResponse] = useState('');
 
-  const handleOpen = (ticketId) => {
-    setOpen(true);
-    setSelectedTicket(tickets[ticketId - 1])
-  }
+  const handleOpen = async (ticketId) => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/tickets/${ticketId}`);
+      setSelectedTicket(response.data.ticket);
+      setOpen(true);
+    } catch (error) {
+      console.error('Error fetching ticket details:', error);
+    }
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setSelectedTicket(null);
+    setResponse('');
+  };
 
   return (
     <div>
@@ -79,13 +69,13 @@ function TicketList() {
           </ListItemButton>
         ))}
       </List>
-      <Dialog open={open} onClose={() => setOpen(false)} maxWidth='md' fullWidth>
+      <Dialog open={open} onClose={handleClose} maxWidth='md' fullWidth>
         {selectedTicket && (
           <>
             <DialogTitle>Ticket # {selectedTicket.id}</DialogTitle>
             <IconButton
               aria-label="close"
-              //onClick={handleClose}
+              onClick={handleClose}
               sx={{
                 position: 'absolute',
                 right: 8,

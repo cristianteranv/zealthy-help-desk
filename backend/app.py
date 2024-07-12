@@ -35,6 +35,22 @@ def get_tickets():
         'updated_at': t.updated_at
     } for t in tickets])
 
+@app.route('/api/tickets/<int:ticket_id>', methods=['GET'])
+def get_ticket(ticket_id):
+    ticket = Ticket.query.get_or_404(ticket_id)
+    print(ticket)
+    return jsonify({
+        'ticket': {
+            'id': ticket.id,
+            'name': ticket.name,
+            'email': ticket.email,
+            'description': ticket.description,
+            'status': ticket.status,
+            'created_at': ticket.created_at.isoformat(),
+            'updated_at': ticket.updated_at.isoformat()
+        },
+    })
+
 
 if __name__ == '__main__':
     with app.app_context():
