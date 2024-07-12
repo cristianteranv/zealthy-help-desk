@@ -19,6 +19,11 @@ import {
 
 function TicketList() {
   const [tickets, setTickets] = useState([]);
+  const STATUS = Object.freeze({
+    NEW: 'new',
+    IN_PROGRESS: 'in progress',
+    DONE: 'done'
+  })
 
   useEffect(() => {
     fetchTickets();
@@ -53,6 +58,34 @@ function TicketList() {
     setResponse('');
   };
 
+  const handleStatusChange = async (newStatus) => {
+    try {
+      await axios.put(`http://localhost:5000/api/tickets/${selectedTicket.id}/status`, { status: newStatus });
+      alert('Status updated successfully');
+      handleClose();
+      fetchTickets();
+    } catch (error) {
+      console.error('Error updating status:', error);
+      alert('Error updating status');
+    }
+  };
+
+  const handleRespond = async (status) => {
+    try {
+      handleStatusChange(status);
+      if (response !== '') {
+        await axios.post(`http://localhost:5000/api/tickets/${selectedTicket.id}/respond`, { message: response });
+        alert('Response submitted successfully');
+        setResponse('');
+      }
+      handleClose();
+      fetchTickets();
+    } catch (error) {
+      console.error('Error submitting response:', error);
+      alert('Error submitting response');
+    }
+  };
+
   return (
     <div>
       <Typography variant="h4" gutterBottom>
@@ -65,7 +98,7 @@ function TicketList() {
               primary={`Ticket #${ticket.id} - ${ticket.name}`}
               secondary={ticket.description}
             />
-            <Chip label={ticket.status} color={ticket.status === 'new' ? 'error' : ticket.status === 'in progress' ? 'warning' : 'success'} />
+            <Chip label={ticket.status} color={ticket.status === STATUS.NEW ? 'error' : ticket.status === STATUS.IN_PROGRESS ? 'warning' : 'success'} />
           </ListItemButton>
         ))}
       </List>
@@ -107,14 +140,11 @@ function TicketList() {
               />
             </DialogContent>
             <DialogActions>
-              <Button  color="primary">
+              <Button onClick={()=>handleRespond('in progress')} color="primary">
                 Mark In Progress
               </Button>
-              <Button  color="secondary">
+              <Button onClick={()=>handleRespond('done')} color="secondary">
                 Mark Resolved
-              </Button>
-              <Button  color="primary">
-                Submit Response
               </Button>
             </DialogActions>
           </>
