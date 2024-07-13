@@ -2,6 +2,8 @@ import React, {useState} from 'react';
 import axios from 'axios';
 import { TextField, Button, Typography, Box } from '@mui/material';
 
+const API_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
+
 function TicketForm() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -10,7 +12,7 @@ function TicketForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/tickets', { name, email, description });
+      await axios.post(`${API_URL}/api/tickets`, { name, email, description });
       alert('Ticket submitted successfully');
       setName('');
       setEmail('');

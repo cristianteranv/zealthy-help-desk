@@ -18,6 +18,8 @@ import {
   Grid
 } from '@mui/material';
 
+const API_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
+
 function TicketList() {
   const [tickets, setTickets] = useState([]);
   const STATUS = Object.freeze({
@@ -32,7 +34,7 @@ function TicketList() {
 
   const fetchTickets = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/tickets');
+      const response = await axios.get(`${API_URL}/api/tickets`);
       setTickets(response.data);
     } catch (error) {
       console.error('Error fetching tickets:', error);
@@ -45,7 +47,7 @@ function TicketList() {
 
   const handleOpen = async (ticketId) => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/tickets/${ticketId}`);
+      const response = await axios.get(`${API_URL}/api/tickets/${ticketId}`);
       setSelectedTicket(response.data);
       setOpen(true);
     } catch (error) {
@@ -61,7 +63,7 @@ function TicketList() {
 
   const handleStatusChange = async (newStatus) => {
     try {
-      await axios.put(`http://localhost:5000/api/tickets/${selectedTicket.ticket.id}/status`, { status: newStatus });
+      await axios.put(`${API_URL}/api/tickets/${selectedTicket.ticket.id}/status`, { status: newStatus });
       handleClose();
       fetchTickets();
     } catch (error) {
@@ -74,7 +76,7 @@ function TicketList() {
     try {
       handleStatusChange(status);
       if (response !== '') {
-        await axios.post(`http://localhost:5000/api/tickets/${selectedTicket.ticket.id}/respond`, { message: response });
+        await axios.post(`${API_URL}/api/tickets/${selectedTicket.ticket.id}/respond`, { message: response });
         setResponse('');
       }
       handleClose();
