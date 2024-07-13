@@ -12,6 +12,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
+with app.app_context():
+    db.create_all()
+    db.session.commit()
+    db.engine.dispose()
+
 
 @app.route('/api/tickets', methods=['POST'])
 def create_ticket():
@@ -81,8 +86,4 @@ def update_ticket_status(ticket_id):
 
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-        db.session.commit()
-        db.engine.dispose()
     app.run(debug=True)
