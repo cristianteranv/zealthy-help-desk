@@ -20,8 +20,7 @@ import {
   Grid
 } from '@mui/material';
 import { STATUS } from '../utils/constants';
-
-const API_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
+import { fetchTicketDetails, fetchTicketsData, respondToTicket, updateTicketStatus } from '../services/ticketServices';
 
 function TicketList() {
   const [tickets, setTickets] = useState([]);
@@ -37,16 +36,18 @@ function TicketList() {
 
   const fetchTickets = async () => {
     try {
-      const response = await axios.get(`${API_URL}/api/tickets`);
+      const response = await fetchTicketsData();
       setTickets(response.data);
     } catch (error) {
       console.error('Error fetching tickets:', error);
+      setSnackMessage('Error fetching tickets');
+      setOpenSnack(true);
     }
   };
 
   const handleOpen = async (ticketId) => {
     try {
-      const response = await axios.get(`${API_URL}/api/tickets/${ticketId}`);
+      const response = await fetchTicketDetails(ticketId);
       setSelectedTicket(response.data);
       setOpen(true);
     } catch (error) {
@@ -62,22 +63,11 @@ function TicketList() {
     setResponse('');
   };
 
-  const handleStatusChange = async (newStatus) => {
-    try {
-      await axios.put(`${API_URL}/api/tickets/${selectedTicket.ticket.id}/status`, { status: newStatus });
-      handleClose();
-      fetchTickets();
-    } catch (error) {
-      console.error('Error updating status:', error);
-      setSnackMessage('Error updating status');
-    }
-  };
-
   const handleRespond = async (status) => {
     try {
-      handleStatusChange(status);
+      await updateTicketStatus(selectedTicket.ticket.id, status);
       if (response !== '') {
-        await axios.post(`${API_URL}/api/tickets/${selectedTicket.ticket.id}/respond`, { message: response });
+        await respondToTicket(selectedTicket.ticket.id, response);
         setResponse('');
       }
       handleClose();

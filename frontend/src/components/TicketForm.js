@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import axios from 'axios';
 import { Alert, Snackbar, TextField, Button, Typography, Box } from '@mui/material';
+import { postNewTicket } from '../services/ticketServices';
 
 const API_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
 
@@ -14,7 +15,7 @@ function TicketForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${API_URL}/api/tickets`, { name, email, description });
+      await postNewTicket(name, email, description);
       setSnackMessage('Ticket submitted successfully.');
       setName('');
       setEmail('');
@@ -65,7 +66,7 @@ function TicketForm() {
         autoHideDuration={3000}
         onClose={() => setOpenSnack(false)}>
           <Alert 
-            severity={snackMessage === 'Ticket submitted successfully' ? 'success' : 'error'}
+            severity={snackMessage === 'Ticket submitted successfully.' ? 'success' : 'error'}
             onClose={() => setOpenSnack(false)}
             variant="filled"
             sx={{ width: '100%' }}
