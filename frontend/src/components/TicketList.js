@@ -15,6 +15,8 @@ import {
   DialogActions,
   Button,
   TextField,
+  Snackbar,
+  Alert,
   Grid
 } from '@mui/material';
 
@@ -22,6 +24,12 @@ const API_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
 
 function TicketList() {
   const [tickets, setTickets] = useState([]);
+  const [openSnack, setOpenSnack] = useState(false);
+  const [snackMessage, setSnackMessage] = useState('');
+  const [selectedTicket, setSelectedTicket] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [response, setResponse] = useState('');
+
   const STATUS = Object.freeze({
     NEW: 'new',
     IN_PROGRESS: 'in progress',
@@ -41,10 +49,6 @@ function TicketList() {
     }
   };
 
-  const [selectedTicket, setSelectedTicket] = useState(null);
-  const [open, setOpen] = useState(false);
-  const [response, setResponse] = useState('');
-
   const handleOpen = async (ticketId) => {
     try {
       const response = await axios.get(`${API_URL}/api/tickets/${ticketId}`);
@@ -52,6 +56,8 @@ function TicketList() {
       setOpen(true);
     } catch (error) {
       console.error('Error fetching ticket details:', error);
+      setSnackMessage('Error fetching ticket details');
+      setOpenSnack(true);
     }
   };
 
@@ -68,7 +74,7 @@ function TicketList() {
       fetchTickets();
     } catch (error) {
       console.error('Error updating status:', error);
-      alert('Error updating status');
+      setSnackMessage('Error updating status');
     }
   };
 
@@ -81,10 +87,12 @@ function TicketList() {
       }
       handleClose();
       fetchTickets();
+      setSnackMessage('Response submitted successfully');
     } catch (error) {
       console.error('Error submitting response:', error);
-      alert('Error submitting response');
+      setSnackMessage('Error submitting response');
     }
+    setOpenSnack(true);
   };
 
   return (
@@ -178,6 +186,19 @@ function TicketList() {
           </>
         )}
       </Dialog>
+      <Snackbar
+          open={openSnack}
+          autoHideDuration={3000}
+          onClose={() => setOpenSnack(false)}>
+            <Alert 
+              severity={snackMessage === 'Response submitted successfully' ? 'success' : 'error'}
+              onClose={() => setOpenSnack(false)}
+              variant="filled"
+              sx={{ width: '100%' }}
+              >
+              {snackMessage}
+            </Alert>
+        </Snackbar>
     </>
   );
 }
