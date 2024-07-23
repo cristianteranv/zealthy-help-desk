@@ -19,6 +19,7 @@ import {
   Alert,
   Grid
 } from '@mui/material';
+import { STATUS } from '../utils/constants';
 
 const API_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
 
@@ -29,12 +30,6 @@ function TicketList() {
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [open, setOpen] = useState(false);
   const [response, setResponse] = useState('');
-
-  const STATUS = Object.freeze({
-    NEW: 'new',
-    IN_PROGRESS: 'in progress',
-    DONE: 'done'
-  })
 
   useEffect(() => {
     fetchTickets();
