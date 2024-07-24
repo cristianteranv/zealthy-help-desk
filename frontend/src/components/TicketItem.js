@@ -9,7 +9,15 @@ import { STATUS } from '../utils/constants';
 const TicketItem = ({ ticket, onClick }) => {
 
   return (
-    <ListItemButton key={ticket.id} onClick={() => onClick(ticket.id)} divider={true}>
+    <ListItemButton 
+      key={ticket.id} 
+      onClick={() => onClick(ticket.id)} 
+      divider={true} 
+      sx={{
+        '&:nth-of-type(even)': {
+          backgroundColor:  (theme) => theme.palette.grey[200]
+        }
+      }}>
       <ListItemText
         primary={`Ticket #${ticket.id} - ${ticket.name}`}
         secondary={ticket.description}

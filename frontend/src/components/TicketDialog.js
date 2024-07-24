@@ -16,6 +16,7 @@ import {
   Box
 } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import React from 'react';
 
 function TicketDialog({open, onClose, selectedTicket, response, setResponse, handleRespond}) {
@@ -40,11 +41,14 @@ function TicketDialog({open, onClose, selectedTicket, response, setResponse, han
   }
 
   function stringAvatar(name) {
-    const names = name.split(' ');
+    const names = name.toUpperCase().split(' ');
 
     return {
       sx: {
         bgcolor: stringToColor(name),
+        marginRight: '1rem',
+        width: 36,
+        height: 36,
       },
       children: names.length > 1 ? `${names[0][0]}${names[1][0]}` : `${names[0][0]}`,
     };
@@ -54,7 +58,10 @@ function TicketDialog({open, onClose, selectedTicket, response, setResponse, han
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth='md' fullWidth>
-      <DialogTitle>Ticket # {selectedTicket.ticket.id}</DialogTitle>
+      <DialogTitle sx={{mb: 0, pb:0}}>
+        Ticket # {selectedTicket.ticket.id} 
+        <Chip label={selectedTicket.ticket.status} color={selectedTicket.ticket.status === 'new' ? 'error' : selectedTicket.ticket.status === 'in progress' ? 'warning' : 'success'} />
+      </DialogTitle>
       <IconButton
         aria-label="close"
         onClick={onClose}
@@ -67,54 +74,66 @@ function TicketDialog({open, onClose, selectedTicket, response, setResponse, han
       >
         <CloseIcon />
       </IconButton>
-      <DialogContent >
-        <Grid container spacing={2}>
-          <Grid item xs={6} direction="row">
+      <DialogContent sx={{pt:1}}>
+        <Grid container spacing={2} sx={{mb:1,}}>
+          <Grid item xs={6}>
+            <Box display="flex" alignItems="center">
+            <Avatar {...stringAvatar(selectedTicket.ticket.name)}  />
             <Typography variant="h6" gutterBottom>
-              <Avatar {...stringAvatar(selectedTicket.ticket.name)} />{selectedTicket.ticket.name}
+              {selectedTicket.ticket.name}
             </Typography>
-            
+            </Box>
           </Grid>
           <Grid item xs={6}>
+            <Box display="flex" alignItems="center">
+            <MailOutlineIcon sx={{marginRight: '1rem', fontSize: 30}} />
             <Typography variant="h6" gutterBottom>
-              <strong>Email: </strong>{selectedTicket.ticket.email}
+              {selectedTicket.ticket.email}
             </Typography>
+            </Box>
           </Grid>
         </Grid>
-        <Grid container spacing={2}>
-          <Grid item xs={6}>
-            <Typography variant="body1" gutterBottom>
-              <strong>Description: </strong>{selectedTicket.ticket.description}
-            </Typography>
-          </Grid>
-          <Grid item xs={6}>
-            <Typography variant="body1" gutterBottom>
-              <strong>Status: </strong>
-              <Chip label={selectedTicket.ticket.status} color={selectedTicket.ticket.status === 'new' ? 'error' : selectedTicket.ticket.status === 'in progress' ? 'warning' : 'success'} />
-            </Typography>
-          </Grid>
-        </Grid>
+        <Typography variant="body1" gutterBottom >
+          <strong>Description: </strong>{selectedTicket.ticket.description}
+        </Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
         {selectedTicket.responses.length > 0 &&
         <>
-          <Typography variant="h6"><strong>Responses:</strong></Typography>
-          <List>
-            {selectedTicket.responses.map((r) => (
-              <ListItem key={r.id}>
-                <ListItemText primary={r.message} secondary={new Date(r.created_at).toLocaleString()} />
-              </ListItem>
-            ))}
-          </List>
+          <Typography sx={{marginTop:'1rem'}} variant="body1"><strong>Responses:</strong></Typography>
+          <Box sx={{ 
+              maxHeight: { xs: '30vh', sm: '40vh' },
+              overflowY: 'auto',
+            }}>
+            <List>
+              {selectedTicket.responses.map((r) => (
+                <ListItem key={r.id}>
+                  <ListItemText 
+                    primary={r.message} 
+                    secondary={new Date(r.created_at).toLocaleString()} 
+                    sx={{ m:0 }}
+                    primaryTypographyProps={{ 
+                      style: { 
+                        whiteSpace: 'normal',
+                        wordBreak: 'break-word',
+                      }
+                    }}
+                  />
+                </ListItem>
+              ))}
+            </List>
+          </Box>
         </>
         }
         <TextField
           fullWidth
           multiline
-          rows={4}
+          maxRows={3}
           value={response}
           onChange={(e) => setResponse(e.target.value)}
           label="Enter your response"
-          style={{ marginTop: '1rem' }}
+          sx={{mt:1}}
         />
+        </Box>
       </DialogContent>
       <DialogActions style={{marginBottom: '0.5rem'}}>
         <Button onClick={()=>handleRespond('in progress')} variant='contained'>
