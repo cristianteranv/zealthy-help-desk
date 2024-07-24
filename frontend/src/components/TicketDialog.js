@@ -12,11 +12,44 @@ import {
   DialogActions,
   Button,
   TextField,
-  Grid
+  Grid,
+  Box
 } from '@mui/material';
+import Avatar from '@mui/material/Avatar';
 import React from 'react';
 
 function TicketDialog({open, onClose, selectedTicket, response, setResponse, handleRespond}) {
+  function stringToColor(string) {
+    let hash = 0;
+    let i;
+  
+    /* eslint-disable no-bitwise */
+    for (i = 0; i < string.length; i += 1) {
+      hash = string.charCodeAt(i) + ((hash << 5) - hash);
+    }
+  
+    let color = '#';
+  
+    for (i = 0; i < 3; i += 1) {
+      const value = (hash >> (i * 8)) & 0xff;
+      color += `00${value.toString(16)}`.slice(-2);
+    }
+    /* eslint-enable no-bitwise */
+  
+    return color;
+  }
+
+  function stringAvatar(name) {
+    const names = name.split(' ');
+
+    return {
+      sx: {
+        bgcolor: stringToColor(name),
+      },
+      children: names.length > 1 ? `${names[0][0]}${names[1][0]}` : `${names[0][0]}`,
+    };
+  }
+
   if (!selectedTicket) return null;
 
   return (
@@ -36,10 +69,11 @@ function TicketDialog({open, onClose, selectedTicket, response, setResponse, han
       </IconButton>
       <DialogContent >
         <Grid container spacing={2}>
-          <Grid item xs={6}>
+          <Grid item xs={6} direction="row">
             <Typography variant="h6" gutterBottom>
-              <strong>Name: </strong>{selectedTicket.ticket.name}
+              <Avatar {...stringAvatar(selectedTicket.ticket.name)} />{selectedTicket.ticket.name}
             </Typography>
+            
           </Grid>
           <Grid item xs={6}>
             <Typography variant="h6" gutterBottom>
