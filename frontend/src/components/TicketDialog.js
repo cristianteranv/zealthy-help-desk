@@ -59,8 +59,8 @@ function TicketDialog({open, onClose, selectedTicket, response, setResponse, han
   return (
     <Dialog open={open} onClose={onClose} maxWidth='md' fullWidth>
       <DialogTitle sx={{mb: 0, pb:0}}>
-        Ticket # {selectedTicket.ticket.id} 
-        <Chip label={selectedTicket.ticket.status} color={selectedTicket.ticket.status === 'new' ? 'error' : selectedTicket.ticket.status === 'in progress' ? 'warning' : 'success'} />
+        Ticket # {selectedTicket.ticket.id}
+        <Chip sx={{ml: 2}} label={selectedTicket.ticket.status} color={selectedTicket.ticket.status === 'new' ? 'error' : selectedTicket.ticket.status === 'in progress' ? 'warning' : 'success'} />
       </DialogTitle>
       <IconButton
         aria-label="close"
