@@ -15,7 +15,10 @@ const TicketItem = ({ ticket, onClick }) => {
       divider={true} 
       sx={{
         '&:nth-of-type(even)': {
-          backgroundColor:  (theme) => theme.palette.grey[200]
+          backgroundColor:  (theme) => theme.palette.grey[100],
+        },
+        '&:hover': {
+          backgroundColor: (theme) => theme.palette.grey[300],
         }
       }}>
       <ListItemText
