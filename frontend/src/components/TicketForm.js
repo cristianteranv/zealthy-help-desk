@@ -40,6 +40,7 @@ function TicketForm() {
       <TextField
         fullWidth
         margin="normal"
+        type="email"
         label="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
