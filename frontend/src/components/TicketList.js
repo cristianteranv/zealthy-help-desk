@@ -4,6 +4,9 @@ import {
   Typography,
   Snackbar,
   Alert,
+  Pagination,
+  Box,
+  Grid,
 } from '@mui/material';
 import { fetchTicketDetails, fetchTicketsData, respondToTicket, updateTicketStatus } from '../services/ticketServices';
 import TicketItem from './TicketItem';
@@ -11,6 +14,8 @@ import TicketDialog from './TicketDialog';
 
 function TicketList() {
   const [tickets, setTickets] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
   const [openSnack, setOpenSnack] = useState(false);
   const [snackMessage, setSnackMessage] = useState('');
   const [selectedTicket, setSelectedTicket] = useState(null);
@@ -18,13 +23,14 @@ function TicketList() {
   const [response, setResponse] = useState('');
 
   useEffect(() => {
-    fetchTickets();
-  }, []);
+    fetchTickets(page);
+  }, [page]);
 
-  const fetchTickets = async () => {
+  const fetchTickets = async (pageNumber) => {
     try {
-      const response = await fetchTicketsData();
-      setTickets(response.data);
+      const response = await fetchTicketsData(pageNumber);
+      setTickets(response.data.tickets);
+      setTotalPages(response.data.pages);
     } catch (error) {
       console.error('Error fetching tickets:', error);
       setSnackMessage('Error fetching tickets');
@@ -42,6 +48,10 @@ function TicketList() {
       setSnackMessage('Error fetching ticket details');
       setOpenSnack(true);
     }
+  };
+
+  const handlePageChange = (event, value) => {
+    setPage(value);
   };
 
   const handleClose = () => {
@@ -69,9 +79,18 @@ function TicketList() {
 
   return (
     <>
-      <Typography variant="h4" gutterBottom>
-        Ticket List
-      </Typography>
+      <Grid container direction="row" justifyContent="space-between" alignItems="center">
+        <Typography variant="h4" gutterBottom>
+          Ticket List
+        </Typography>
+        <Pagination
+          count={totalPages} 
+          page={page} 
+          onChange={handlePageChange} 
+          color="primary" 
+          size='small'
+        />
+      </Grid>
       <List>
         {tickets.map((ticket) => (
           <TicketItem key={ticket.id} ticket={ticket} onClick={handleOpen} />

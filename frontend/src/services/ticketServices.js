@@ -10,9 +10,9 @@ export const postNewTicket = async (name, email, description) => {
   }
 }
 
-export const fetchTicketsData = async () => {
+export const fetchTicketsData = async (pageNumber) => {
   try {
-    const response = await axios.get(`${API_URL}/api/tickets`);
+    const response = await axios.get(`${API_URL}/api/tickets?page=${pageNumber}&per_page=10`);
     return response;
   } catch (error) {
     console.error('Error fetching tickets:', error);
