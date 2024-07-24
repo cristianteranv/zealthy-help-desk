@@ -68,7 +68,7 @@ function TicketList() {
         setResponse('');
       }
       handleClose();
-      fetchTickets();
+      fetchTickets(page);
       setSnackMessage('Response submitted successfully');
     } catch (error) {
       console.error('Error submitting response:', error);

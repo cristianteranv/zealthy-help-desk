@@ -1,5 +1,6 @@
 from flask import jsonify, request
 from models import db, Ticket, Response
+from sqlalchemy import case
 
 def create_ticket():
   data = request.json
@@ -12,9 +13,18 @@ def create_ticket():
 def get_tickets():
   page = request.args.get('page', 1, type=int)
   per_page= request.args.get('per_page', 10, type=int)
-  pagination = Ticket.query.order_by(Ticket.created_at.desc()).paginate(page=page, per_page=per_page, error_out=False)
+  
+  status_case = case(
+    (Ticket.status == 'new', 1),
+    (Ticket.status == 'in progress', 2),
+    (Ticket.status == 'done', 3),
+    else_=4
+  )
+  query = Ticket.query.order_by(status_case, Ticket.created_at.desc())
 
+  pagination = query.paginate(page=page, per_page=per_page, error_out=False)
   tickets = pagination.items
+
   return jsonify({
     'tickets': [{
       'id': t.id,
