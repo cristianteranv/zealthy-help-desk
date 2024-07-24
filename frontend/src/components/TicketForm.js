@@ -1,9 +1,6 @@
 import React, {useState} from 'react';
-import axios from 'axios';
 import { Alert, Snackbar, TextField, Button, Typography, Box } from '@mui/material';
 import { postNewTicket } from '../services/ticketServices';
-
-const API_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
 
 function TicketForm() {
   const [name, setName] = useState('');

@@ -5,7 +5,6 @@ import {
   Snackbar,
   Alert,
   Pagination,
-  Box,
   Grid,
 } from '@mui/material';
 import { fetchTicketDetails, fetchTicketsData, respondToTicket, updateTicketStatus } from '../services/ticketServices';
